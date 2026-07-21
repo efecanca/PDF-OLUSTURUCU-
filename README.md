@@ -33,7 +33,7 @@ public class PdfStudioApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        com.tom_roush.pdfbox.util.PDFBoxResourceLoader.init(getApplicationContext());
+        com.tom_roush.pdfbox.android.PDFBoxResourceLoader.init(getApplicationContext());
     }
 }
 ```
