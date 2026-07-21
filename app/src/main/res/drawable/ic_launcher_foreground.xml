@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Sayfa gövdesi (kırık köşeli), krem/paper renk -->
+    <path
+        android:fillColor="#F4EFE4"
+        android:pathData="M35,26 L65,26 L75,36 L75,84 L35,84 Z" />
+
+    <!-- Kıvrılan köşe (bakır) -->
+    <path
+        android:fillColor="#A85C32"
+        android:pathData="M65,26 L75,36 L65,36 Z" />
+
+    <!-- Sayfa üzerindeki metin çizgileri -->
+    <path
+        android:fillColor="#1C2B39"
+        android:fillAlpha="0.55"
+        android:pathData="M41,46 L69,46 L69,49 L41,49 Z" />
+    <path
+        android:fillColor="#1C2B39"
+        android:fillAlpha="0.55"
+        android:pathData="M41,56 L69,56 L69,59 L41,59 Z" />
+    <path
+        android:fillColor="#1C2B39"
+        android:fillAlpha="0.55"
+        android:pathData="M41,66 L60,66 L60,69 L41,69 Z" />
+
+    <!-- Köşe kesim işaretleri (crop marks) - imza öge -->
+    <path
+        android:strokeColor="#A85C32"
+        android:strokeWidth="1.6"
+        android:pathData="M24,20 L24,14 M20,17 L28,17" />
+    <path
+        android:strokeColor="#A85C32"
+        android:strokeWidth="1.6"
+        android:pathData="M84,20 L84,14 M80,17 L88,17" />
+    <path
+        android:strokeColor="#A85C32"
+        android:strokeWidth="1.6"
+        android:pathData="M24,90 L24,96 M20,93 L28,93" />
+    <path
+        android:strokeColor="#A85C32"
+        android:strokeWidth="1.6"
+        android:pathData="M84,90 L84,96 M80,93 L88,93" />
+
+</vector>
