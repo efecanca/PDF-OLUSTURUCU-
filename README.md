@@ -1,5 +1,22 @@
-# PDF-OLUSTURUCU-
-# PDF Oluşturma Modülü
+# PDF Studio
+
+Android üzerinden (PC/Android Studio olmadan) geliştirilen, fotoğrafları PDF'e
+dönüştüren bir uygulama. Derleme tamamen **GitHub Actions** üzerinde yapılır —
+her push'ta `.github/workflows/build.yml` çalışır ve debug APK'yı
+Actions sekmesindeki "Artifacts" bölümüne yükler. İndirip telefona kurarak
+test edebilirsin.
+
+## Proje yapısı
+
+```
+app/
+  src/main/java/com/pdfstudio/app/   → MainActivity, PdfStudioApp (uygulama iskeleti)
+  src/main/java/com/pdfstudio/pdf/   → PdfPageSize, PdfExportOptions, PhotoToPdfConverter (PDF modülü)
+  src/main/res/                      → strings, tema
+.github/workflows/build.yml          → her push'ta otomatik APK build
+```
+
+## PDF Oluşturma Modülü
 
 ## 1. Gradle bağımlılığı (app/build.gradle)
 
