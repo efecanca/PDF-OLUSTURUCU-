@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">PDF Studio</string>
+    <string name="no_photos_selected">Henüz fotoğraf seçilmedi</string>
+    <string name="pick_photos">Galeriden Fotoğraf Seç</string>
+    <string name="convert_to_pdf">PDF\'e Dönüştür</string>
+    <string name="converting">PDF oluşturuluyor…</string>
 </resources>
