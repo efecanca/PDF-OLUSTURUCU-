@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,8 +37,14 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView selectionStatus;
     private TextView resultText;
+    private EditText fileNameInput;
     private Button convertButton;
+    private Button openButton;
+    private Button shareButton;
+    private View postConvertActions;
     private ProgressBar progressBar;
+
+    private File lastGeneratedFile;
 
     private ActivityResultLauncher<String> pickPhotosLauncher;
 
@@ -48,7 +55,11 @@ public class MainActivity extends AppCompatActivity {
 
         selectionStatus = findViewById(R.id.selectionStatus);
         resultText = findViewById(R.id.resultText);
+        fileNameInput = findViewById(R.id.fileNameInput);
         convertButton = findViewById(R.id.convertButton);
+        openButton = findViewById(R.id.openButton);
+        shareButton = findViewById(R.id.shareButton);
+        postConvertActions = findViewById(R.id.postConvertActions);
         progressBar = findViewById(R.id.progressBar);
         Button pickButton = findViewById(R.id.pickPhotosButton);
 
@@ -62,9 +73,12 @@ public class MainActivity extends AppCompatActivity {
 
         pickButton.setOnClickListener(v -> pickPhotosLauncher.launch("image/*"));
         convertButton.setOnClickListener(v -> convertToPdf());
+        openButton.setOnClickListener(v -> openPdf(lastGeneratedFile));
+        shareButton.setOnClickListener(v -> sharePdf(lastGeneratedFile));
     }
 
     private void updateSelectionStatus() {
+        postConvertActions.setVisibility(View.GONE);
         if (selectedPhotos.isEmpty()) {
             selectionStatus.setText(R.string.no_photos_selected);
             convertButton.setEnabled(false);
@@ -75,12 +89,24 @@ public class MainActivity extends AppCompatActivity {
         resultText.setText("");
     }
 
+    /** Kullanıcının girdiği adı dosya sistemi için güvenli hale getirir. */
+    private String resolveFileName() {
+        String raw = fileNameInput.getText().toString().trim();
+        if (raw.isEmpty()) {
+            return "katalog_" + System.currentTimeMillis();
+        }
+        String safe = raw.replaceAll("[^a-zA-Z0-9ığüşöçİĞÜŞÖÇ _-]", "");
+        return safe.isEmpty() ? ("katalog_" + System.currentTimeMillis()) : safe;
+    }
+
     private void convertToPdf() {
         progressBar.setVisibility(View.VISIBLE);
         convertButton.setEnabled(false);
+        postConvertActions.setVisibility(View.GONE);
         resultText.setText("");
 
         List<Uri> photosSnapshot = new ArrayList<>(selectedPhotos);
+        String fileName = resolveFileName();
 
         executor.execute(() -> {
             try {
@@ -90,8 +116,7 @@ public class MainActivity extends AppCompatActivity {
                         .setFitMode(PdfExportOptions.FitMode.FILL)
                         .setJpegQuality(0.85f);
 
-                File outFile = new File(getExternalFilesDir(null),
-                        "katalog_" + System.currentTimeMillis() + ".pdf");
+                File outFile = new File(getExternalFilesDir(null), fileName + ".pdf");
 
                 try (FileOutputStream out = new FileOutputStream(outFile)) {
                     new PhotoToPdfConverter(this).convert(photosSnapshot, options, out);
@@ -105,11 +130,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onConvertSuccess(File outFile) {
+        lastGeneratedFile = outFile;
         progressBar.setVisibility(View.GONE);
         convertButton.setEnabled(true);
+        postConvertActions.setVisibility(View.VISIBLE);
         resultText.setText("PDF oluşturuldu: " + outFile.getName());
         Toast.makeText(this, "PDF hazır", Toast.LENGTH_SHORT).show();
-        openPdf(outFile);
     }
 
     private void onConvertError(Exception e) {
@@ -118,9 +144,14 @@ public class MainActivity extends AppCompatActivity {
         resultText.setText("Hata: " + e.getMessage());
     }
 
-    private void openPdf(File file) {
-        Uri uri = FileProvider.getUriForFile(this,
+    private Uri uriFor(File file) {
+        return FileProvider.getUriForFile(this,
                 getApplicationContext().getPackageName() + ".fileprovider", file);
+    }
+
+    private void openPdf(File file) {
+        if (file == null) return;
+        Uri uri = uriFor(file);
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(uri, "application/pdf");
@@ -132,6 +163,18 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             Toast.makeText(this, "PDF görüntüleyecek uygulama bulunamadı", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void sharePdf(File file) {
+        if (file == null) return;
+        Uri uri = uriFor(file);
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("application/pdf");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        startActivity(Intent.createChooser(intent, "PDF'i paylaş"));
     }
 
     @Override

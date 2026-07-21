@@ -5,4 +5,7 @@
     <string name="pick_photos">Galeriden Fotoğraf Seç</string>
     <string name="convert_to_pdf">PDF\'e Dönüştür</string>
     <string name="converting">PDF oluşturuluyor…</string>
+    <string name="file_name_hint">Dosya adı (opsiyonel, örn. Kristal-Katalog)</string>
+    <string name="open_pdf">Aç</string>
+    <string name="share_pdf">Paylaş</string>
 </resources>
